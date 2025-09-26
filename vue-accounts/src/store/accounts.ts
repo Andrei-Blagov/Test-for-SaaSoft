@@ -53,6 +53,12 @@ export const useAccountsStore = defineStore('accounts', () => {
     }
 
     load();
-
-    return { accounts, addEmpty, remove, update, load, persist };
+    
+    return { 
+        accounts, 
+        addEmpty, 
+        remove, 
+        update, 
+        load, 
+        persist };
 });

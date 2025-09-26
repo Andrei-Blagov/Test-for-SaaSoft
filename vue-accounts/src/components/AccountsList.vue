@@ -1,33 +1,26 @@
 <template>
-    <div>
-        <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+    <div class="card">
+        <div class="card-header">
             <h2>Список учётных записей</h2>
-            <button @click="add">+</button>
+            <button class="btn" @click="add">+ Добавить</button>
         </div>
 
-        <div v-if="store.accounts.length === 0">Пока нет записей — нажмите + чтобы добавить</div>
+        <p v-if="!store.accounts.length" class="info">
+            Пока нет записей — добавьте первую
+        </p>
 
-        <div class="list">
+        <div class="grid">
             <AccountItem v-for="acc in store.accounts" :key="acc.id" :account="acc" @remove="onRemove" @save="onSave" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useAccountsStore } from '@/store/accounts';
-import AccountItem from './AccountItem.vue';
-import { storeToRefs } from 'pinia';
-const store = useAccountsStore();
+import { useAccountsStore } from '../store/accounts'
+import AccountItem from './AccountItem.vue'
 
-function add() {
-    store.addEmpty();
-}
-
-function onRemove(id: string) {
-    store.remove(id);
-}
-
-function onSave(updatedAccount: any) {
-    store.update(updatedAccount);
-}
+const store = useAccountsStore()
+const add = () => store.addEmpty()
+const onRemove = (id: string) => store.remove(id)
+const onSave = (acc: any) => store.update(acc)
 </script>

@@ -1,135 +1,83 @@
 <template>
-    <div class="account">
-        <div class="row">
+    <div class="card account">
+        <div class="field">
             <label>Метки</label>
-            <input v-model="tagsInput" @blur="onTagsBlur" :class="{ invalid: errors.tags }"
-                placeholder="метка1;метка2" />
-            <div v-if="errors.tags" class="err">{{ errors.tags }}</div>
+            <input v-model="tagsInput" @blur="onTagsBlur" :class="{ error: errors.tags }" placeholder="tag1; tag2" />
+            <span v-if="errors.tags" class="error-msg">{{ errors.tags }}</span>
         </div>
 
-        <div class="row">
-            <label>Тип записи</label>
+        <div class="field">
+            <label>Тип</label>
             <select v-model="local.type" @change="onTypeChange">
                 <option value="LDAP">LDAP</option>
                 <option value="Local">Локальная</option>
             </select>
         </div>
 
-        <div class="row">
+        <div class="field">
             <label>Логин</label>
-            <input v-model="local.login" @blur="onBlurSave" :class="{ invalid: errors.login }" maxlength="100" />
-            <div v-if="errors.login" class="err">{{ errors.login }}</div>
+            <input v-model="local.login" @blur="onBlurSave" maxlength="100" :class="{ error: errors.login }" />
+            <span v-if="errors.login" class="error-msg">{{ errors.login }}</span>
         </div>
 
-        <div class="row" v-if="local.type === 'Local'">
+        <div class="field" v-if="local.type === 'Local'">
             <label>Пароль</label>
-            <input v-model="local.password" type="password" @blur="onBlurSave" :class="{ invalid: errors.password }"
-                maxlength="100" />
-            <div v-if="errors.password" class="err">{{ errors.password }}</div>
+            <input type="password" v-model="local.password" @blur="onBlurSave" maxlength="100"
+                :class="{ error: errors.password }" />
+            <span v-if="errors.password" class="error-msg">{{ errors.password }}</span>
         </div>
 
-        <div class="controls">
-            <button @click="$emit('remove', local.id)">Удалить</button>
-            <button @click="forceSave">Сохранить</button>
+        <div class="actions">
+            <button class="btn danger" @click="$emit('remove', local.id)">Удалить</button>
+            <button class="btn primary" @click="forceSave">Сохранить</button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
-import type { Account } from '@/types';
-import { validateAccount } from '@/utils/validation';
-import { toRaw } from 'vue';
+import { reactive, ref, watch } from 'vue'
+import type { Account } from '../types'
+import { validateAccount } from '../utils/validation'
 
-const props = defineProps<{ account: Account }>();
-const emit = defineEmits<{
-    (e: 'remove', id: string): void;
-    (e: 'save', account: Account): void;
-}>();
+const props = defineProps<{ account: Account }>()
+const emit = defineEmits<{ (e: 'remove', id: string): void; (e: 'save', acc: Account): void }>()
 
-// локальная копия, чтобы редактировать без немедленного пуша в стор
-const local = reactive({ ...props.account } as Account);
-const tagsInput = ref(props.account.tagsInput ?? props.account.tags.map(t => t.text).join(';'));
-const errors = reactive<{ [k: string]: string | null }>({
-    tags: null,
-    login: null,
-    password: null,
-});
+const local = reactive({ ...props.account })
+const tagsInput = ref(props.account.tags.map(t => t.text).join(';'))
+const errors = reactive<{ [k: string]: string | null }>({ tags: null, login: null, password: null, type: null })
 
 watch(() => props.account, (v) => {
-    Object.assign(local, v);
-    tagsInput.value = v.tags.map(t => t.text).join(';');
-});
+    Object.assign(local, v)
+    tagsInput.value = v.tags.map(t => t.text).join(';')
+})
 
 function parseTags(input: string) {
-    return input
-        .split(';')
-        .map(s => s.trim())
-        .filter(s => s.length > 0)
-        .map(text => ({ text }));
+    return input.split(';').map(s => s.trim()).filter(Boolean).map(text => ({ text }))
 }
 
 function onTagsBlur() {
-    const parsed = parseTags(tagsInput.value);
-    local.tags = parsed;
-    local.tagsInput = tagsInput.value;
-    const { isValid, errors: e } = validateAccount(local);
-    Object.assign(errors, e);
-    if (isValid) {
-        emit('save', toRaw(local));
-    }
+    local.tags = parseTags(tagsInput.value)
+    local.tagsInput = tagsInput.value
+    validateAndSave()
 }
 
 function onBlurSave() {
-    const { isValid, errors: e } = validateAccount(local);
-    Object.assign(errors, e);
-    if (isValid) {
-        emit('save', toRaw(local));
-    }
+    validateAndSave()
 }
 
 function onTypeChange() {
-    if (local.type === 'LDAP') {
-        local.password = null;
-    } else if (local.type === 'Local' && (local.password === null)) {
-        local.password = '';
-    }
-    onBlurSave();
+    if (local.type === 'LDAP') local.password = null
+    if (local.type === 'Local' && local.password === null) local.password = ''
+    validateAndSave()
 }
 
 function forceSave() {
-    const { isValid, errors: e } = validateAccount(local);
-    Object.assign(errors, e);
-    if (isValid) emit('save', toRaw(local));
+    validateAndSave(true)
+}
+
+function validateAndSave(force = false) {
+    const { isValid, errors: e } = validateAccount(local)
+    Object.assign(errors, e)
+    if (isValid || force) emit('save', { ...local })
 }
 </script>
-
-<style scoped>
-.account {
-    border: 1px solid #ddd;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 6px;
-}
-
-.row {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 8px;
-}
-
-.controls {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-}
-
-.invalid {
-    border: 1px solid red;
-}
-
-.err {
-    color: red;
-    font-size: 12px;
-}
-</style>

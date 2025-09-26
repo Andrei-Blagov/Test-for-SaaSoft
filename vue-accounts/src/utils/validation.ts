@@ -20,11 +20,8 @@ export function validateAccount(a: Account) {
         } else if (a.password.toString().length > 100) {
             errors.password = 'Максимум 100 символов';
         }
-    } else {
-        // LDAP: password must be saved as null — проверка не обязательна
     }
 
-    // tags: optional, but length constraint per tag maybe apply on saving.
     if (a.tags && a.tags.some(t => t.text.length > 50)) {
         errors.tags = 'Каждая метка максимум 50 символов';
     }

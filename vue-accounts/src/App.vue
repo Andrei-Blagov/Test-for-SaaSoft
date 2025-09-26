@@ -9,10 +9,10 @@
 import AccountsList from './components/AccountsList.vue';
 </script>
 
-<style>
+<!-- <style>
 .container {
   max-width: 900px;
   margin: 24px auto;
   padding: 16px;
 }
-</style>
+</style> -->
