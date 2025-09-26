@@ -5,9 +5,9 @@ export type Tag = {
 };
 
 export type Account = {
-    id: string; // uuid или timestamp
-    tags: Tag[]; // хранится как массив объектов { text }
-    tagsInput?: string; // вспомогательное поле для редактирования (строка с ;)
+    id: string;
+    tags: Tag[];
+    tagsInput?: string;
     type: AccountType;
     login: string;
     password: string | null;
