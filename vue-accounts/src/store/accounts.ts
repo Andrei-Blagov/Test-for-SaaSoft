@@ -43,17 +43,18 @@ export const useAccountsStore = defineStore('accounts', () => {
     }
 
     function update(account: Account) {
+        const clean = { ...account, tagsInput: undefined }
         const idx = accounts.value.findIndex(a => a.id === account.id);
         if (idx !== -1) {
-            accounts.value[idx] = { ...account };
+            accounts.value[idx] = clean;
         } else {
-            accounts.value.push(account);
+            accounts.value.push(clean);
         }
         persist();
     }
 
     load();
-    
+
     return { 
         accounts, 
         addEmpty, 

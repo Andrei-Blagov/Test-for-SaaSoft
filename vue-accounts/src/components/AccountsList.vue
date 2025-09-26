@@ -2,8 +2,12 @@
     <div class="card">
         <div class="card-header">
             <h2>Список учётных записей</h2>
-            <button class="btn" @click="add">+ Добавить</button>
+            <button class="btn add" @click="add">+</button>
         </div>
+
+        <p v-if="store.accounts.length" class="info teg">
+            Для указания нескольких меток одного аккаунта используйте разделитель ;
+        </p>
 
         <p v-if="!store.accounts.length" class="info">
             Пока нет записей — добавьте первую

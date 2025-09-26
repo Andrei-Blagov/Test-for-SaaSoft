@@ -62,6 +62,15 @@ body {
     border: none;
     cursor: pointer;
 
+    &.add {
+        font-size: 25px;
+        background: #d16161;
+
+        &:hover {
+            background: darken(#d15a5a, 15%);
+        }
+    }
+
     &.primary {
         background: $primary;
         color: #fff;
@@ -84,4 +93,10 @@ body {
 .info {
     color: #666;
     font-style: italic;
+    
+    &.teg {
+        padding: 8px;
+        background-color: #cfcfcf;
+        color: black;
+    }
 }

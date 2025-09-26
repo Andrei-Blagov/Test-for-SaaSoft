@@ -57,7 +57,6 @@ function parseTags(input: string) {
 
 function onTagsBlur() {
     local.tags = parseTags(tagsInput.value)
-    local.tagsInput = tagsInput.value
     validateAndSave()
 }
 
@@ -78,6 +77,11 @@ function forceSave() {
 function validateAndSave(force = false) {
     const { isValid, errors: e } = validateAccount(local)
     Object.assign(errors, e)
-    if (isValid || force) emit('save', { ...local })
+    if (isValid || force) {
+        emit('save', {
+            ...local,
+            tags: parseTags(tagsInput.value)
+        })
+    }
 }
 </script>
