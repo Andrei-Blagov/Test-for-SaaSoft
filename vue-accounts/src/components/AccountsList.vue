@@ -6,10 +6,10 @@
         </div>
 
         <p v-if="store.accounts.length" class="info teg">
-            Для указания нескольких меток одного аккаунта используйте разделитель ;
+            Для указания нескольких меток одной учетной записи используйте разделитель ;
         </p>
 
-        <p v-if="!store.accounts.length" class="info">
+        <p v-else="!store.accounts.length" class="info">
             Пока нет записей — добавьте первую
         </p>
 

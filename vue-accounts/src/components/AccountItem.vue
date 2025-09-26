@@ -2,12 +2,13 @@
     <div class="card account">
         <div class="field">
             <label>Метки</label>
-            <input v-model="tagsInput" @blur="onTagsBlur" :class="{ error: errors.tags }" placeholder="tag1; tag2" />
+            <input v-model="tagsInput" @blur="onTagsBlur" :class="{ error: errors.tags }"
+                placeholder="Метка1; Метка2..." />
             <span v-if="errors.tags" class="error-msg">{{ errors.tags }}</span>
         </div>
 
         <div class="field">
-            <label>Тип</label>
+            <label>Тип записи</label>
             <select v-model="local.type" @change="onTypeChange">
                 <option value="LDAP">LDAP</option>
                 <option value="Local">Локальная</option>
@@ -16,7 +17,8 @@
 
         <div class="field">
             <label>Логин</label>
-            <input v-model="local.login" @blur="onBlurSave" maxlength="100" :class="{ error: errors.login }" />
+            <input v-model="local.login" @blur="onBlurSave" maxlength="100" :class="{ error: errors.login }"
+                placeholder="Значение" />
             <span v-if="errors.login" class="error-msg">{{ errors.login }}</span>
         </div>
 
