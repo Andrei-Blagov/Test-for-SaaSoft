@@ -94,9 +94,4 @@ function validateAndSave(force = false) {
         })
     }
 }
-
-function togglePassword() {
-    /// const input = document.getElementById('password-input');
-    input.type = input.type === 'password' ? 'text' : 'password';
-}
 </script>
