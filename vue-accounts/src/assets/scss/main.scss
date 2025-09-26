@@ -100,3 +100,23 @@ body {
         color: black;
     }
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+        flex: 1;
+        padding-right: 40px;
+    }
+
+    .toggle-btn {
+        position: absolute;
+        right: 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+}

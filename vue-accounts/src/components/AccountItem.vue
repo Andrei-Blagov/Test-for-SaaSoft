@@ -24,8 +24,14 @@
 
         <div class="field" v-if="local.type === 'Local'">
             <label>Пароль</label>
-            <input type="password" v-model="local.password" @blur="onBlurSave" maxlength="100"
-                :class="{ error: errors.password }" />
+            <div class="password-wrapper">
+                <input :type="showPassword ? 'text' : 'password'" v-model="local.password" @blur="onBlurSave"
+                    maxlength="100" :class="{ error: errors.password }" placeholder="Введите пароль" />
+                <button type="button" class="toggle-btn" @click="showPassword = !showPassword"
+                    :aria-label="showPassword ? 'Скрыть пароль' : 'Показать пароль'">
+                    {{ showPassword ? '👁️' : '🙈' }}
+                </button>
+            </div>
             <span v-if="errors.password" class="error-msg">{{ errors.password }}</span>
         </div>
 
@@ -47,6 +53,8 @@ const emit = defineEmits<{ (e: 'remove', id: string): void; (e: 'save', acc: Acc
 const local = reactive({ ...props.account })
 const tagsInput = ref(props.account.tags.map(t => t.text).join(';'))
 const errors = reactive<{ [k: string]: string | null }>({ tags: null, login: null, password: null, type: null })
+
+const showPassword = ref(false)
 
 watch(() => props.account, (v) => {
     Object.assign(local, v)
@@ -85,5 +93,10 @@ function validateAndSave(force = false) {
             tags: parseTags(tagsInput.value)
         })
     }
+}
+
+function togglePassword() {
+    /// const input = document.getElementById('password-input');
+    input.type = input.type === 'password' ? 'text' : 'password';
 }
 </script>
